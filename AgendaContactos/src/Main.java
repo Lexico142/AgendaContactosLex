@@ -12,9 +12,33 @@ public class Main{
         System.out.println("3. Buscar contacto");
         System.out.println("4. Salir");
 
-        String opcion = src.nextLine();
+        int opcion = src.nextInt();
 
-        System.out.println("Has elegido la opción '" + opcion + "'");
+        switch(opcion){
+            case 1:
+                while (true){
+                    boolean valido = false;
+                    if (valido == false){
+                        System.out.println("Introduce el número del contacto que quieras añadir");
+                        String numero = src.nextLine();
+                        if (numero.length() == 9){
+                            System.out.println("Introduce el nombre y apellidos del contacto que quieras añadir");
+                            String nombre = src.nextLine();
+                            valido = true;
+                            break;
+                        } else{
+                            System.out.println("Introduce un número de teléfono válido");
+                        }
+
+                    }
+
+
+                }
+        }
+
+
+
+
 
     }
 }
