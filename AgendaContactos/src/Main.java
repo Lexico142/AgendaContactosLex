@@ -1,7 +1,6 @@
-
 import java.util.Scanner;
 
-public class Main{
+public class Main {
     public static void main(String[] args) {
 
         Scanner src = new Scanner(System.in);
@@ -13,32 +12,31 @@ public class Main{
         System.out.println("4. Salir");
 
         int opcion = src.nextInt();
+        src.nextLine();
 
         switch(opcion){
             case 1:
                 while (true){
-                    boolean valido = false;
-                    if (valido == false){
+                    boolean numerovalido = false;
+
+                    if (!numerovalido){
                         System.out.println("Introduce el número del contacto que quieras añadir");
                         String numero = src.nextLine();
+
                         if (numero.length() == 9){
                             System.out.println("Introduce el nombre y apellidos del contacto que quieras añadir");
                             String nombre = src.nextLine();
-                            valido = true;
+                            System.out.println("Has añadido al contacto " + nombre + " correctamente");
+                            numerovalido = true;
                             break;
-                        } else{
+                        } else {
                             System.out.println("Introduce un número de teléfono válido");
                         }
-
                     }
 
 
                 }
+
         }
-
-
-
-
-
     }
 }
