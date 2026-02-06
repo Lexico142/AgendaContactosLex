@@ -13,7 +13,7 @@ public class Main {
         int cantidad = 0;
 
         while (activo) {
-            System.out.println("\n--- AGENDA TELEFÓNICA ---");
+            System.out.println("\n=== AGENDA TELEFÓNICA ===");
             System.out.println("1. Añadir contacto");
             System.out.println("2. Listar contactos");
             System.out.println("3. Buscar contacto");
@@ -26,62 +26,19 @@ public class Main {
 
             switch (opcion) {
                 case 1:
-                    if (cantidad >= 100) {
-                        System.out.println("La agenda está llena.");
-                        break;
-                    }
-
-                    boolean numeroValido = false;
-                    while (!numeroValido) {
-                        System.out.println("Introduce el número de teléfono (9 dígitos):");
-                        int tempNum = src.nextInt();
-                        src.nextLine();
-
-                        if (String.valueOf(tempNum).length() == 9) {
-                            numeros[cantidad] = tempNum;
-                            numeroValido = true;
-
-                            System.out.println("Introduce el nombre y apellidos:");
-                            nombres[cantidad] = src.nextLine();
-
-                            System.out.println("Has añadido al contacto " + nombres[cantidad] + " correctamente.");
-
-                            cantidad++;
-                        } else {
-                            System.out.println("Error: Introduce un número de teléfono válido de 9 dígitos.");
-                        }
-                    }
-                    Thread.sleep(1000);
+                    anadirContacto(nombres, numeros, cantidad, src);
                     break;
 
                 case 2:
-                    System.out.println("\n--- LISTA DE CONTACTOS ---");
-                    if (cantidad == 0) {
-                        System.out.println("No hay contactos guardados.");
-                    } else {
-                        for (int i = 0; i < cantidad; i++) {
-                            System.out.println("Índice [" + i + "] -> Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
-                        }
-                    }
-                    Thread.sleep(1500);
+                    listarContactos(nombres, numeros, cantidad);
                     break;
 
                 case 3:
+                    buscarContacto(nombres, numeros, cantidad, src);
                     break;
 
                 case 4:
-                    System.out.println("\n--- MODIFICAR CONTACTO ---");
-                    if (cantidad == 0) {
-                        System.out.println("No hay contactos guardados.");
-                    } else {
-                        for (int i = 0; i < cantidad; i++) {
-                            System.out.println("Índice [" + i + "] -> Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
-                        }
-                        System.out.println("Qué contacto quieres modificar? [0-99]");
-
-                    }
-
-                    Thread.sleep(1000);
+                    modificarContacto(nombres, numeros, cantidad, src);
                     break;
 
                 case 0:
@@ -93,6 +50,105 @@ public class Main {
                     System.out.println("Opción no válida.");
             }
         }
+        
         src.close();
+    }
+
+    static void anadirContacto(String[] nombres, int[] numeros, int cantidad, Scanner src) throws InterruptedException {
+        if (cantidad >= 100) {
+            System.out.println("La agenda está llena.");
+            main(null);
+        }
+
+        boolean numeroValido = false;
+        while (!numeroValido) {
+            System.out.println("Introduce el número de teléfono (9 dígitos):");
+            int tempNum = src.nextInt();
+            src.nextLine();
+
+            if (String.valueOf(tempNum).length() == 9) {
+                numeros[cantidad] = tempNum;
+                numeroValido = true;
+
+                System.out.println("Introduce el nombre y apellidos:");
+                nombres[cantidad] = src.nextLine();
+
+                System.out.println("Has añadido al contacto " + nombres[cantidad] + " correctamente.");
+
+                cantidad++;
+            } else {
+                System.out.println("Error: Introduce un número de teléfono válido de 9 dígitos.");
+            }
+        }
+        Thread.sleep(1000);
+    }
+
+    static void buscarContacto(String[] nombres, int[] numeros, int cantidad, Scanner src) {
+        System.out.println("\n=== BUSCAR CONTACTO ===");
+        if (cantidad == 0) {
+            System.out.println("No hay contactos guardados.");
+            return;
+        }
+
+        System.out.print("Introduce el nombre del contacto a buscar: ");
+        String nombreBuscado = src.nextLine();
+
+        boolean encontrado = false;
+        for (int i = 0; i < cantidad; i++) {
+            if (nombres[i].equalsIgnoreCase(nombreBuscado)) {
+                System.out.println("Contacto encontrado: Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Contacto no encontrado.");
+        }
+    }
+
+    static void modificarContacto(String[] nombres, int[] numeros, int cantidad, Scanner src) {
+        System.out.println("\n=== MODIFICAR CONTACTO ===");
+        if (cantidad == 0) {
+            System.out.println("No hay contactos guardados.");
+            return;
+        }
+
+        System.out.print("Introduce el nombre del contacto a modificar: ");
+        String nombreBuscado = src.nextLine();
+
+        boolean encontrado = false;
+        for (int i = 0; i < cantidad; i++) {
+            if (nombres[i].equalsIgnoreCase(nombreBuscado)) {
+                System.out.println("Contacto encontrado: Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
+                System.out.print("Introduce el nuevo número de teléfono (9 dígitos): ");
+                int nuevoNum = src.nextInt();
+                src.nextLine();
+
+                if (String.valueOf(nuevoNum).length() == 9) {
+                    numeros[i] = nuevoNum;
+                    System.out.println("Número de teléfono actualizado correctamente.");
+                } else {
+                    System.out.println("Error: Introduce un número de teléfono válido de 9 dígitos.");
+                }
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Contacto no encontrado.");
+        }
+    }
+
+    static void listarContactos(String[] nombres, int[] numeros, int cantidad) {
+        System.out.println("\n--- LISTA DE CONTACTOS ---");
+        if (cantidad == 0) {
+            System.out.println("No hay contactos guardados.");
+        } else {
+            for (int i = 0; i < cantidad; i++) {
+                System.out.println("Índice [" + i + "] -> Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
+            }
+        }
     }
 }
