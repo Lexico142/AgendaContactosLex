@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.Scanner;
 
 public class Main {
@@ -7,9 +6,7 @@ public class Main {
         Scanner src = new Scanner(System.in);
         boolean activo = true;
 
-        String[] nombres = new String[100];
-        int[] numeros = new int[100];
-
+        Contacto[] agenda = new Contacto[100];
         int cantidad = 0;
 
         while (activo) {
@@ -26,19 +23,19 @@ public class Main {
 
             switch (opcion) {
                 case 1:
-                    anadirContacto(nombres, numeros, cantidad, src);
+                    cantidad = anadirContacto(agenda, cantidad, src);
                     break;
 
                 case 2:
-                    listarContactos(nombres, numeros, cantidad);
+                    listarContactos(agenda, cantidad);
                     break;
 
                 case 3:
-                    buscarContacto(nombres, numeros, cantidad, src);
+                    buscarContacto(agenda, cantidad, src);
                     break;
 
                 case 4:
-                    modificarContacto(nombres, numeros, cantidad, src);
+                    modificarContacto(agenda, cantidad, src);
                     break;
 
                 case 0:
@@ -50,14 +47,13 @@ public class Main {
                     System.out.println("Opción no válida.");
             }
         }
-        
         src.close();
     }
 
-    static void anadirContacto(String[] nombres, int[] numeros, int cantidad, Scanner src) throws InterruptedException {
-        if (cantidad >= 100) {
+    static int anadirContacto(Contacto[] agenda, int cantidad, Scanner src) throws InterruptedException {
+        if (cantidad >= agenda.length) {
             System.out.println("La agenda está llena.");
-            main(null);
+            return cantidad;
         }
 
         boolean numeroValido = false;
@@ -67,23 +63,35 @@ public class Main {
             src.nextLine();
 
             if (String.valueOf(tempNum).length() == 9) {
-                numeros[cantidad] = tempNum;
-                numeroValido = true;
-
                 System.out.println("Introduce el nombre y apellidos:");
-                nombres[cantidad] = src.nextLine();
+                String tempNombre = src.nextLine();
 
-                System.out.println("Has añadido al contacto " + nombres[cantidad] + " correctamente.");
+                agenda[cantidad] = new Contacto(tempNombre, tempNum);
 
+                System.out.println("Has añadido al contacto " + agenda[cantidad].getNombre() + " correctamente.");
+
+                numeroValido = true;
                 cantidad++;
             } else {
                 System.out.println("Error: Introduce un número de teléfono válido de 9 dígitos.");
             }
         }
         Thread.sleep(1000);
+        return cantidad;
     }
 
-    static void buscarContacto(String[] nombres, int[] numeros, int cantidad, Scanner src) {
+    static void listarContactos(Contacto[] agenda, int cantidad) {
+        System.out.println("\n--- LISTA DE CONTACTOS ---");
+        if (cantidad == 0) {
+            System.out.println("No hay contactos guardados.");
+        } else {
+            for (int i = 0; i < cantidad; i++) {
+                System.out.println("Índice [" + i + "] -> " + agenda[i]);
+            }
+        }
+    }
+
+    static void buscarContacto(Contacto[] agenda, int cantidad, Scanner src) {
         System.out.println("\n=== BUSCAR CONTACTO ===");
         if (cantidad == 0) {
             System.out.println("No hay contactos guardados.");
@@ -95,8 +103,8 @@ public class Main {
 
         boolean encontrado = false;
         for (int i = 0; i < cantidad; i++) {
-            if (nombres[i].equalsIgnoreCase(nombreBuscado)) {
-                System.out.println("Contacto encontrado: Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
+            if (agenda[i].getNombre().equalsIgnoreCase(nombreBuscado)) {
+                System.out.println("Contacto encontrado: " + agenda[i]);
                 encontrado = true;
                 break;
             }
@@ -107,7 +115,7 @@ public class Main {
         }
     }
 
-    static void modificarContacto(String[] nombres, int[] numeros, int cantidad, Scanner src) {
+    static void modificarContacto(Contacto[] agenda, int cantidad, Scanner src) {
         System.out.println("\n=== MODIFICAR CONTACTO ===");
         if (cantidad == 0) {
             System.out.println("No hay contactos guardados.");
@@ -119,17 +127,17 @@ public class Main {
 
         boolean encontrado = false;
         for (int i = 0; i < cantidad; i++) {
-            if (nombres[i].equalsIgnoreCase(nombreBuscado)) {
-                System.out.println("Contacto encontrado: Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
+            if (agenda[i].getNombre().equalsIgnoreCase(nombreBuscado)) {
+                System.out.println("Contacto encontrado: " + agenda[i]);
                 System.out.print("Introduce el nuevo número de teléfono (9 dígitos): ");
                 int nuevoNum = src.nextInt();
                 src.nextLine();
 
                 if (String.valueOf(nuevoNum).length() == 9) {
-                    numeros[i] = nuevoNum;
+                    agenda[i].setNumero(nuevoNum);
                     System.out.println("Número de teléfono actualizado correctamente.");
                 } else {
-                    System.out.println("Error: Introduce un número de teléfono válido de 9 dígitos.");
+                    System.out.println("Error: Número inválido.");
                 }
                 encontrado = true;
                 break;
@@ -138,17 +146,6 @@ public class Main {
 
         if (!encontrado) {
             System.out.println("Contacto no encontrado.");
-        }
-    }
-
-    static void listarContactos(String[] nombres, int[] numeros, int cantidad) {
-        System.out.println("\n--- LISTA DE CONTACTOS ---");
-        if (cantidad == 0) {
-            System.out.println("No hay contactos guardados.");
-        } else {
-            for (int i = 0; i < cantidad; i++) {
-                System.out.println("Índice [" + i + "] -> Nombre: " + nombres[i] + " | Tlf: " + numeros[i]);
-            }
         }
     }
 }
