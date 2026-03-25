@@ -1,4 +1,9 @@
-class Contacto {
+package modelo;
+import modelo.AgendaModelo;
+import controlador.AgendaControlador;
+import vista.AgendaVista;
+
+public class Contacto {
     private String nombre;
     private int numero;
 
